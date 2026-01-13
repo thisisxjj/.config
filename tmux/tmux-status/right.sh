@@ -31,7 +31,7 @@ right_cap="█"
 hostname=$(hostname -s 2>/dev/null || hostname 2>/dev/null || printf 'host')
 rainbarf_bg="#2e3440"
 rainbarf_segment=""
-rainbarf_toggle="${TMUX_RAINBARF:-1}"
+rainbarf_toggle="0"
 
 case "$rainbarf_toggle" in
   0|false|FALSE|off|OFF|no|NO)
