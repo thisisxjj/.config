@@ -64,3 +64,11 @@ find-in-file() {
 zle -N find-in-file
 bindkey '^f' find-in-file
 
+# 通用预览配置：如果是目录就列出文件，如果是文件就显示内容
+zstyle ':fzf-tab:complete:*:*' fzf-preview \
+  'if [ -d $realpath ]; then
+    ls -1 --color=always $realpath
+  elif [ -f $realpath ]; then
+    cat $realpath
+  fi'
+
