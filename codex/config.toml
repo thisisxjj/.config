@@ -1,5 +1,4 @@
 tui    = { theme = { name = "dark-zen-garden" }, spinner = { name = "brailleDotsClassic" }, alternate_screen = true, notifications = true }
-notify = ["/usr/bin/python3", "/Users/david/.config/codex/notify.py"]
 
 model                    = "gpt-5.2"
 model_verbosity          = "medium"  # low|medium|high
@@ -35,10 +34,6 @@ unified_exec         = false
 # args = ["/Users/david/Github/project-wiki-mcp/dist/index.js"]
 # cwd = "/Users/david/Github/project-wiki-mcp"
 # startup_timeout_ms = 20000
-
-[mcp_servers.tracker]
-command            = "/Users/david/.config/agent-tracker/bin/tracker-mcp"
-startup_timeout_ms = 20000
 
 
 [mcp_servers.web]
