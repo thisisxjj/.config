@@ -58,6 +58,20 @@ keymap('n', 'h', 'n', opts)
 -- H: 搜索上一个 (Hunt back, 原 N)
 keymap('n', 'H', 'N', opts)
 
+-- 保存关闭当前文件 
+keymap("n", "<leader>w", ":w<cr>", opts);
+keymap({ "n", "t" }, "<leader>q", ":q<cr>", opts);
+
+-- buffer
+keymap("n", "<leader>b'", ":bnext<CR>", opts)
+keymap("n", "<leader>b;", ":bprevious<CR>", opts)
+keymap("n", "<C-c>", ":bwipeout<CR>", opts)
+
+-- Yank to system clipboard
+keymap("n", "<leader>y", '"+y')
+keymap("v", "<leader>y", '"+y')
+keymap("n", "<leader>Y", '"+Y')
+
 -- 声明前缀（很重要）
 keymap(modes, "s", "<Nop>", opts);
 keymap(modes, "<leader>s", "<Nop>", opts);
@@ -166,3 +180,17 @@ keymap('n', '<leader>k', 'K', opts)
 
 -- 因为 i 变成了上移，原 gi (Insert last) 冲突 -> 映射到 gn (Insert new last)
 keymap('n', 'gn', 'gi', opts)
+
+-- ==========================================================================
+--  第九部分：可视模式移动选中行 (JKLI 方向适配)
+-- ==========================================================================
+
+-- 选中行下移/上移（与 k/i 方向保持一致）
+keymap("v", "<C-k>", ":m '>+1<CR>gv=gv", opts)
+keymap("v", "<C-i>", ":m '<-2<CR>gv=gv", opts)
+
+keymap("n", "<leader>tn", ":tabnew<CR>")
+keymap("n", "<leader>tq", ":tabclose<CR>")
+keymap("n", "<leader>ts", ":tab split<CR>")
+keymap("n", "<leader><Tab>", ":tabnext<CR>")
+keymap("n", "<leader><S-Tab>", ":tabprevious<CR>")

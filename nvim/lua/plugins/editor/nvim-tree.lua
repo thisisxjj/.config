@@ -27,7 +27,7 @@ return {
       },
       actions = {
         open_file = {
-          quit_on_open = true,
+          quit_on_open = false,
           resize_window = true,
         },
       },
@@ -91,8 +91,8 @@ return {
 
         -- custom mappings
         vim.keymap.set("n", "P", api.node.open.preview, ops("Preview"))
-        vim.keymap.set("n", "s", api.node.open.vertical_no_picker, ops("Open Vertical"))
-        vim.keymap.set("n", "S", api.node.open.horizontal_no_picker, ops("Open Horizontal"))
+        vim.keymap.set("n", "v", api.node.open.vertical_no_picker, ops("Open Vertical"))
+        vim.keymap.set("n", "h", api.node.open.horizontal_no_picker, ops("Open Horizontal"))
       end
 
       opts.on_attach = keybindings
@@ -120,7 +120,7 @@ return {
         end)
       end
 
-      vim.api.nvim_create_autocmd("BufEnter", {
+      vim.api.nvim_create_autocmd("VimEnter", {
         group = vim.api.nvim_create_augroup("nvim-tree", { clear = true }),
         callback = open_tree_on_setup,
       })
