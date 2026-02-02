@@ -18,6 +18,7 @@ require("lazy").setup({
 	spec = {
 		{ import = "plugins.editor.tmux" },
 		{ import = "plugins.editor.nvim-tree" },
+		{ import = "plugins.editor.lualine" },
 		{ import = "plugins.ui.colorscheme" }
 	},
 	checker = { enabled = false },
