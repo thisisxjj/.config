@@ -11,6 +11,7 @@ vim.o.completeopt = "menu,menuone,noselect,preview" -- omnicomplete options for 
 vim.o.pumheight = 10 -- max height of completion menu
 vim.o.winborder = "rounded" -- rounded border
 vim.o.showmode = false -- disable showing mode below statusline
+vim.o.clipboard = "unnamedplus"
 
 vim.o.cursorline = true -- enable cursor line
 vim.o.signcolumn = "yes" -- always show sign column
