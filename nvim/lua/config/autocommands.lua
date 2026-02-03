@@ -23,10 +23,15 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 	end,
 })
 
--- open help in vertical split
+-- open help in horizontal split (bottom)
 vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("help_window", { clear = true }),
 	pattern = "help",
-	command = "wincmd L",
+	callback = function()
+		vim.schedule(function()
+			vim.cmd("wincmd J")
+		end)
+	end,
 })
 
 -- auto resize splits when the terminal's window is resized
