@@ -20,7 +20,8 @@ require("lazy").setup({
 		{ import = "plugins.editor.nvim-tree" },
 		{ import = "plugins.editor.lualine" },
 		{ import = "plugins.ui.colorscheme" },
-		{ import = "plugins.ui.dressing" }
+		{ import = "plugins.ui.dressing" },
+		{ import = "plugins.ui.dashboard" }
 	},
 	checker = { enabled = false },
 })
