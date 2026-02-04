@@ -63,8 +63,82 @@ return {
     },
     config = function(_, opts)
       local nvimtree = require("nvim-tree")
+      local utils = require("nvim-tree.utils")
+
+      local wrapped_input
+
+      local function wrap_nvim_tree_input()
+        if vim.ui.input == wrapped_input then
+          return
+        end
+
+        local path_sep = utils.path_separator
+
+        local function is_absolute(path)
+          if not path or path == "" then
+            return false
+          end
+          if utils.is_windows and path:match("^%a:[/\\]") then
+            return true
+          end
+          return path:sub(1, 1) == path_sep
+        end
+
+        local original = vim.ui.input
+        local function wrapped(input_opts, on_confirm)
+          if type(input_opts) == "table" and vim.bo.filetype == "NvimTree" then
+            if input_opts.prompt == "Create file " then
+              local prefix = input_opts.default or ""
+              if prefix ~= "" then
+                prefix = utils.path_add_trailing(prefix)
+              end
+              local opts_trim = vim.tbl_extend("force", input_opts, { default = "" })
+              return original(opts_trim, function(value)
+                if value and value ~= "" and not is_absolute(value) then
+                  value = prefix .. value
+                end
+                on_confirm(value)
+              end)
+            end
+
+            if input_opts.prompt == "Rename to " then
+              local default = input_opts.default or ""
+              local prefix = ""
+              local display_default = default
+              local has_sep = default:find(path_sep, 1, true) ~= nil
+              local has_drive = utils.is_windows and default:match("^%a:[/\\]") ~= nil
+
+              if (has_sep or has_drive) and default ~= "" then
+                local parent = vim.fn.fnamemodify(default, ":h")
+                if parent ~= "" and parent ~= "." then
+                  prefix = utils.path_add_trailing(parent)
+                end
+                display_default = vim.fn.fnamemodify(default, ":t")
+              end
+
+              local opts_trim = input_opts
+              if display_default ~= default then
+                opts_trim = vim.tbl_extend("force", input_opts, { default = display_default })
+              end
+
+              return original(opts_trim, function(value)
+                if value and value ~= "" and prefix ~= "" and not is_absolute(value) then
+                  value = prefix .. value
+                end
+                on_confirm(value)
+              end)
+            end
+          end
+
+          return original(input_opts, on_confirm)
+        end
+
+        wrapped_input = wrapped
+        vim.ui.input = wrapped_input
+      end
 
       local function keybindings(bufnr)
+        wrap_nvim_tree_input()
         local api = require("nvim-tree.api")
 
         local function ops(desc)
