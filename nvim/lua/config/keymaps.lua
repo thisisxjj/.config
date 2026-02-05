@@ -76,13 +76,13 @@ keymap("n", "<leader>Y", '"+Y')
 keymap(modes, "s", "<Nop>", opts);
 keymap(modes, "<leader>s", "<Nop>", opts);
 -- split up (horizontal)
-keymap(modes, "<leader>si", "<Cmd>set nosplitbelow<CR><Cmd>split<CR><Cmd>set splitbelow<CR>", opts)
+-- keymap(modes, "<leader>si", "<Cmd>set nosplitbelow<CR><Cmd>split<CR><Cmd>set splitbelow<CR>", opts)
 -- split down (horizontal)
-keymap(modes, "<leader>sk", "<Cmd>set splitbelow<CR><Cmd>split<CR>", opts)
+-- keymap(modes, "<leader>sk", "<Cmd>set splitbelow<CR><Cmd>split<CR>", opts)
 -- split left (vertical)
-keymap(modes, "<leader>sl", "<Cmd>set nosplitright<CR><Cmd>vsplit<CR><Cmd>set splitright<CR>", opts)
+-- keymap(modes, "<leader>sl", "<Cmd>set nosplitright<CR><Cmd>vsplit<CR><Cmd>set splitright<CR>", opts)
 -- split right (vertical)
-keymap(modes, "<leader>sj", "<Cmd>set splitright<CR><Cmd>vsplit<CR>", opts)
+-- keymap(modes, "<leader>sj", "<Cmd>set splitright<CR><Cmd>vsplit<CR>", opts)
 -- =========================
 -- Re-arrange splits (still under leader+s*)
 -- =========================

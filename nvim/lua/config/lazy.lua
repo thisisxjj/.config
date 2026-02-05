@@ -16,6 +16,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 	spec = {
+		{ import = "plugins.coding.treesitter" },
 		{ import = "plugins.editor.tmux" },
 		{ import = "plugins.editor.nvim-tree" },
 		{ import = "plugins.editor.lualine" },
