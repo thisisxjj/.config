@@ -4,42 +4,10 @@
   "model": "anthropic/claude-opus-4-5",
   "autoupdate": true,
   "mcp": {
-    "spotlight": {
-      "enabled": false,
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "--prefer-online",
-        "@spotlightjs/spotlight@latest",
-        "mcp"
-      ]
-    },
     "shadcn": {
       "enabled": true,
       "type": "local",
       "command": ["npx", "shadcn@latest", "mcp"]
     },
-    "neon": {
-      "enabled": true,
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@neondatabase/mcp-server-neon",
-        "start",
-        "{env:NEON_API_KEY}"
-      ]
-    },
-    "@21st-dev/magic": {
-      "enabled": false,
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@21st-dev/magic@latest",
-        "API_KEY={env:MAGIC_API_KEY}"
-      ]
-    }
   }
 }
