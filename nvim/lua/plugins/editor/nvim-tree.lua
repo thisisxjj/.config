@@ -37,9 +37,9 @@ return {
       view = {
         centralize_selection = true,
         adaptive_size = false,
-        side = "right",
+        side = "left",
         preserve_window_proportions = true,
-        width = 40,
+        width = 30,
       },
       renderer = {
         full_name = false,
@@ -140,6 +140,8 @@ return {
       local function keybindings(bufnr)
         wrap_nvim_tree_input()
         local api = require("nvim-tree.api")
+        local RootNode = require("nvim-tree.node.root")
+        local DirectoryNode = require("nvim-tree.node.directory")
 
         local function ops(desc)
           return {
@@ -151,19 +153,54 @@ return {
           }
         end
 
+        local function smart_parent()
+          local node = api.tree.get_node_under_cursor()
+          if not node then
+            return
+          end
+
+          if node.name == ".." or node:is(RootNode) then
+            api.tree.change_root_to_parent()
+            return
+          end
+
+          api.node.navigate.parent()
+        end
+
+        local function toggle_dir_or_open_file()
+          local node = api.tree.get_node_under_cursor()
+          if not node then
+            return
+          end
+
+          if node.name == ".." or node:is(RootNode) then
+            return
+          end
+
+          if node:is(DirectoryNode) then
+            api.node.open.edit()
+            return
+          end
+
+          api.node.open.edit()
+        end
+
         -- default mappings
         api.config.mappings.default_on_attach(bufnr)
 
         -- jkli direction remap (raw key behavior, not API navigation)
-        vim.keymap.set("n", "j", api.node.navigate.parent, ops("Parent"))
+        vim.keymap.set("n", "j", smart_parent, ops("Parent/Up"))
         vim.keymap.set("n", "k", "j", ops("Down"))
         vim.keymap.set("n", "i", "k", ops("Up"))
-        vim.keymap.set("n", "l", api.node.open.edit, ops("Open/Expand"))
+        vim.keymap.set("n", "l", toggle_dir_or_open_file, ops("Expand/Collapse or Open"))
 
         -- disable h to avoid conflicts with global search remap
         vim.keymap.set("n", "h", "<Nop>", ops("Disable h"))
 
         -- custom mappings
+        vim.keymap.set("n", "I", api.node.navigate.sibling.first, ops("First Sibling"))
+        vim.keymap.set("n", "K", api.node.navigate.sibling.last, ops("Last Sibling"))
+        vim.keymap.set("n", "J", "<Nop>", ops("Disable J"))
         vim.keymap.set("n", "P", api.node.open.preview, ops("Preview"))
         vim.keymap.set("n", "v", api.node.open.vertical_no_picker, ops("Open Vertical"))
         vim.keymap.set("n", "h", api.node.open.horizontal_no_picker, ops("Open Horizontal"))
