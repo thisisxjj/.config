@@ -60,6 +60,10 @@ outer.bottom =     18
 outer.top =        18
 outer.right =      18
 
+[[on-window-detected]]
+if.app-id = 'com.colliderli.iina'
+run = ['layout floating', 'exec-and-forget /bin/bash -lc "/bin/bash ~/.config/aerospace/center-iina.sh"']
+
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 # 'main' binding mode must be always presented
@@ -137,10 +141,10 @@ alt-r = ['mode resize']
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
 
 [mode.resize.binding]
-j = 'resize width -50'
-k = 'resize height +50'
-i = 'resize height -50'
-l = 'resize width +50'
+a = 'resize width -50'
+s = 'resize height +50'
+w = 'resize height -50'
+d = 'resize width +50'
 b = 'balance-sizes'
 
 
