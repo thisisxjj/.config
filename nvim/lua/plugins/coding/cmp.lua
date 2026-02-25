@@ -65,6 +65,12 @@ return { -- Autocompletion
 		completion = {
 			documentation = { auto_show = true, auto_show_delay_ms = 500 },
 			-- 补全菜单的显示逻辑与旧版 completeopt = 'menu,menuone,noinsert' 类似，blink 原生已经优化得很好
+			accept = {
+				-- 开启原生极速括号补全
+				auto_brackets = {
+					enabled = true,
+				},
+			},
 		},
 
 		sources = {
