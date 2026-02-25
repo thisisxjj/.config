@@ -16,16 +16,16 @@ local opts = { noremap = true, silent = true }
 -- ==========================================================================
 
 -- 普通模式、可视模式、选择模式
-local modes = {'n', 'v', 'x', 'o'}
+local modes = { "n", "v", "x", "o" }
 
 -- j: 左移 (原 h)
-keymap(modes, 'j', 'h', opts)
+keymap(modes, "j", "h", opts)
 -- k: 下移 (原 j)
-keymap(modes, 'k', 'j', opts)
+keymap(modes, "k", "j", opts)
 -- i: 上移 (原 k) - [冲突源头]
-keymap(modes, 'i', 'k', opts)
+keymap(modes, "i", "k", opts)
 -- l: 右移 (原 l) - 保持不变，显式定义以防混淆
-keymap(modes, 'l', 'l', opts)
+keymap(modes, "l", "l", opts)
 
 -- ==========================================================================
 --  第二部分：快速大幅移动 (Large Motions)
@@ -33,13 +33,13 @@ keymap(modes, 'l', 'l', opts)
 -- ==========================================================================
 
 -- J: 到行首 (原 0/^)
-keymap(modes, 'J', '0', opts)
+keymap(modes, "J", "0", opts)
 -- K: 向下 5 行 (原 5j)
-keymap(modes, 'K', '5j', opts)
+keymap(modes, "K", "5j", opts)
 -- I: 向上 5 行 (原 5k)
-keymap(modes, 'I', '5k', opts)
+keymap(modes, "I", "5k", opts)
 -- L: 到行尾 (原 $)
-keymap(modes, 'L', '$', opts)
+keymap(modes, "L", "$", opts)
 
 -- ==========================================================================
 --  第三部分：插入与搜索 (Insert & Search Migration)
@@ -48,19 +48,19 @@ keymap(modes, 'L', '$', opts)
 
 -- --- 插入模式 (Insert) ---
 -- n: 在光标前插入 (New, 原 i)
-keymap('n', 'n', 'i', opts)
+keymap("n", "n", "i", opts)
 -- N: 在行首插入 (原 I)
-keymap('n', 'N', 'I', opts)
+keymap("n", "N", "I", opts)
 
 -- --- 搜索跳转 (Search) ---
 -- h: 搜索下一个 (Hunt, 原 n) - 因为 h 键的左移功能被 j 拿走了，现在 h 是空的
-keymap('n', 'h', 'n', opts)
+keymap("n", "h", "n", opts)
 -- H: 搜索上一个 (Hunt back, 原 N)
-keymap('n', 'H', 'N', opts)
+keymap("n", "H", "N", opts)
 
--- 保存关闭当前文件 
-keymap("n", "<leader>w", ":w<cr>", opts);
-keymap({ "n", "t" }, "<leader>q", ":q<cr>", opts);
+-- 保存关闭当前文件
+keymap("n", "<leader>w", ":w<cr>", opts)
+keymap({ "n", "t" }, "<leader>q", ":q<cr>", opts)
 
 -- buffer
 keymap("n", "<leader>b'", ":bnext<CR>", opts)
@@ -73,8 +73,9 @@ keymap("v", "<leader>y", '"+y')
 keymap("n", "<leader>Y", '"+Y')
 
 -- 声明前缀（很重要）
-keymap(modes, "s", "<Nop>", opts);
-keymap(modes, "<leader>s", "<Nop>", opts);
+keymap(modes, "s", "<Nop>", opts)
+keymap(modes, "<C-h>", "<Nop>", opts)
+keymap(modes, "<leader>s", "<Nop>", opts)
 -- split up (horizontal)
 -- keymap(modes, "<leader>si", "<Cmd>set nosplitbelow<CR><Cmd>split<CR><Cmd>set splitbelow<CR>", opts)
 -- split down (horizontal)
@@ -97,10 +98,10 @@ keymap("n", "<leader>sv", "<Cmd>set splitright<CR><Cmd>vsplit<CR>", opts)
 
 -- 在 Operator Pending 模式下，将 n 映射为 i (inner)
 -- 效果：按 dnw 等同于原来的 diw (删除单词内部)
-keymap('o', 'n', 'i', opts)
+keymap("o", "n", "i", opts)
 
 -- 针对 Visual 模式的 inner 选择 (例如 vnw 选中单词)
-keymap('x', 'n', 'i', opts)
+keymap("x", "n", "i", opts)
 
 -- ==========================================================================
 --  第五部分：高级移动修复 (Advanced Fixes)
@@ -109,20 +110,20 @@ keymap('x', 'n', 'i', opts)
 
 -- --- 视觉行移动 (Visual/Display Line) ---
 -- 逻辑：k 是下，所以 gk 应该是视觉下移 (原 gj)
-keymap({'n', 'v'}, 'gk', 'gj', opts)
+keymap({ "n", "v" }, "gk", "gj", opts)
 -- 逻辑：i 是上，所以 gi 应该是视觉上移 (原 gk)
-keymap({'n', 'v'}, 'gi', 'gk', opts)
+keymap({ "n", "v" }, "gi", "gk", opts)
 
 -- --- 折叠跳转 (Folds) ---
 -- 逻辑：k 是下，zk 应该是下个折叠 (原 zj)
-keymap('n', 'zk', 'zj', opts)
+keymap("n", "zk", "zj", opts)
 -- 逻辑：i 是上，zi 应该是上个折叠 (原 zk)
-keymap('n', 'zi', 'zk', opts)
+keymap("n", "zi", "zk", opts)
 
 -- --- 搜索选中 (Visual Selection) ---
 -- 逻辑：h 是搜下一个，所以 gh 选中下一个匹配 (原 gn)
-keymap({'n', 'o', 'x'}, 'gh', 'gn', opts)
-keymap({'n', 'o', 'x'}, 'gH', 'gN', opts)
+keymap({ "n", "o", "x" }, "gh", "gn", opts)
+keymap({ "n", "o", "x" }, "gH", "gN", opts)
 
 -- ==========================================================================
 --  第六部分：窗口管理 (Window Management)
@@ -142,10 +143,10 @@ keymap({'n', 'o', 'x'}, 'gH', 'gN', opts)
 -- keymap('n', '<M-L>', ':vertical resize +2<CR>', opts)
 
 -- 终端模式下的窗口切换 (让你在 terminal 里也能切出来)
-keymap('t', '<M-j>', [[<C-\><C-n><C-w>h]], opts)
-keymap('t', '<M-k>', [[<C-\><C-n><C-w>j]], opts)
-keymap('t', '<M-i>', [[<C-\><C-n><C-w>k]], opts)
-keymap('t', '<M-l>', [[<C-\><C-n><C-w>l]], opts)
+keymap("t", "<M-j>", [[<C-\><C-n><C-w>h]], opts)
+keymap("t", "<M-k>", [[<C-\><C-n><C-w>j]], opts)
+keymap("t", "<M-i>", [[<C-\><C-n><C-w>k]], opts)
+keymap("t", "<M-l>", [[<C-\><C-n><C-w>l]], opts)
 
 -- ==========================================================================
 --  第七部分：命令行增强 (Command Mode)
@@ -153,33 +154,33 @@ keymap('t', '<M-l>', [[<C-\><C-n><C-w>l]], opts)
 -- ==========================================================================
 
 local cmap = function(lhs, rhs)
-    vim.keymap.set('c', lhs, rhs, { noremap = true })
+	vim.keymap.set("c", lhs, rhs, { noremap = true })
 end
 
-cmap('<C-a>', '<Home>')   -- 到行首
-cmap('<C-e>', '<End>')    -- 到行尾
-cmap('<C-p>', '<Up>')     -- 历史: 上一条
-cmap('<C-n>', '<Down>')   -- 历史: 下一条
-cmap('<C-b>', '<Left>')   -- 左移字符
-cmap('<C-f>', '<Right>')  -- 右移字符
+cmap("<C-a>", "<Home>") -- 到行首
+cmap("<C-e>", "<End>") -- 到行尾
+cmap("<C-p>", "<Up>") -- 历史: 上一条
+cmap("<C-n>", "<Down>") -- 历史: 下一条
+cmap("<C-b>", "<Left>") -- 左移字符
+cmap("<C-f>", "<Right>") -- 右移字符
 
 -- 单词移动 (Meta/Alt 键)
-cmap('<M-b>', '<S-Left>')  -- 左跳一个词
-cmap('<M-f>', '<S-Right>') -- 右跳一个词 (Forward)
-cmap('<M-w>', '<S-Right>') -- 兼容写法 (如果你习惯 w 代表 word)
+cmap("<M-b>", "<S-Left>") -- 左跳一个词
+cmap("<M-f>", "<S-Right>") -- 右跳一个词 (Forward)
+cmap("<M-w>", "<S-Right>") -- 兼容写法 (如果你习惯 w 代表 word)
 
 -- ==========================================================================
 --  第八部分：找回丢失的重要功能
 -- ==========================================================================
 
 -- 因为 J 变成了行首，原来的 Join (合并行) 没了 -> 映射到 Leader j
-keymap('n', '<leader>j', 'J', opts)
+keymap("n", "<leader>j", "J", opts)
 
 -- 因为 K 变成了下移5行，原来的 Hover (查看文档) 没了 -> 映射到 Leader k
-keymap('n', '<leader>k', 'K', opts)
+keymap("n", "<leader>k", "K", opts)
 
 -- 因为 i 变成了上移，原 gi (Insert last) 冲突 -> 映射到 gn (Insert new last)
-keymap('n', 'gn', 'gi', opts)
+keymap("n", "gn", "gi", opts)
 
 -- ==========================================================================
 --  第九部分：可视模式移动选中行 (JKLI 方向适配)

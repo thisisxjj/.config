@@ -22,7 +22,47 @@ return {
 			},
 			"saghen/blink.cmp",
 		},
-		config = function()
+		-- =====================================================================
+		-- 基础配置盘 (Baseline)
+		-- =====================================================================
+		opts = {
+			servers = {
+				astro = {},
+				cssls = {},
+				pyright = {},
+				intelephense = {},
+				neocmake = {},
+				tailwindcss = {},
+				volar = {},
+				-- vtsls 作为空桩位，准备接收 typescript.lua 和 astro.lua 的插件注入
+				vtsls = {},
+
+				-- 模块化内聚：ESLint 特殊配置
+				eslint = {
+					settings = { workingDirectory = { mode = "auto" } },
+					on_attach = function(client, bufnr)
+						client.server_capabilities.documentFormattingProvider = false
+						vim.api.nvim_buf_create_user_command(bufnr, "EslintFixAll", function()
+							client.request("workspace/executeCommand", {
+								command = "eslint.applyAllFixes",
+								arguments = { { uri = vim.uri_from_bufnr(bufnr) } },
+							})
+						end, { desc = "ESLint: Fix all autofixable problems" })
+					end,
+				},
+
+				-- 模块化内聚：Lua_ls 特殊配置
+				lua_ls = {
+					settings = {
+						Lua = {
+							completion = { callSnippet = "Replace" },
+							diagnostics = { globals = { "vim" }, disable = { "missing-fields" } },
+						},
+					},
+				},
+			},
+		},
+		config = function(_, opts)
 			-- 1. 全局 LspAttach (处理跳转、重命名，以及高亮和内联提示)
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
@@ -39,11 +79,6 @@ return {
 
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					-- 1. 跳转到声明 (C/C++常用，TS/JS不支持)
-					if
-						client and client:supports_method(vim.lsp.protocol.Methods.textDocument_declaration, event.buf)
-					then
-						map("gD", vim.lsp.buf.declaration, "Goto Declaration")
-					end
 					-- 2. 跳转到类型定义 (TypeScript / Vue 开发神器！)
 					-- 当你的光标在一个变量上时，跳到定义它 TS 接口 (Interface/Type) 的地方
 					if
@@ -132,61 +167,16 @@ return {
 				},
 			})
 
-			-- 4. 挂载标准 LSP 服务器
-			local standard_servers = {
-				"astro",
-				"cssls",
-				"pyright",
-				"intelephense",
-				"neocmake",
-				"tailwindcss",
-				"vtsls",
-				"volar",
-			}
-
-			for _, name in ipairs(standard_servers) do
-				vim.lsp.config(name, {
-					capabilities = vim.tbl_deep_extend("force", {}, capabilities),
-				})
-				vim.lsp.enable(name)
+			-- 4. 极致原生的发射舱 (遍历所有合并好的 opts.servers 并在底层启动)
+			for name, server_config in pairs(opts.servers or {}) do
+				-- 💡 拦截检查：过滤掉被模块化文件声明为 { enabled = false } 的服务器 (如 tsserver)
+				if server_config.enabled ~= false then
+					server_config.capabilities =
+						vim.tbl_deep_extend("force", {}, capabilities, server_config.capabilities or {})
+					vim.lsp.config(name, server_config)
+					vim.lsp.enable(name)
+				end
 			end
-
-			-- 5. 挂载特殊 LSP 服务器 (工程化独立配置)
-
-			-- 5.1 ESLint 独立配置
-			vim.lsp.config("eslint", {
-				capabilities = vim.tbl_deep_extend("force", {}, capabilities),
-				settings = {
-					workingDirectory = { mode = "auto" },
-				},
-				on_attach = function(client, bufnr)
-					client.server_capabilities.documentFormattingProvider = false
-					vim.api.nvim_buf_create_user_command(bufnr, "EslintFixAll", function()
-						vim.lsp.buf.execute_command({
-							command = "eslint.applyAllFixes",
-							arguments = { { uri = vim.uri_from_bufnr(0) } },
-						})
-					end, { desc = "ESLint: Fix all autofixable problems" })
-				end,
-			})
-			vim.lsp.enable("eslint")
-
-			-- 5.2 Lua_ls 独立配置
-			vim.lsp.config("lua_ls", {
-				capabilities = vim.tbl_deep_extend("force", {}, capabilities),
-				settings = {
-					Lua = {
-						completion = {
-							callSnippet = "Replace",
-						},
-						diagnostics = {
-							globals = { "vim" },
-							disable = { "missing-fields" },
-						},
-					},
-				},
-			})
-			vim.lsp.enable("lua_ls")
 		end,
 	},
 }

@@ -30,7 +30,7 @@ return { -- Autocompletion
 	opts = {
 		keymap = {
 			-- 'default' 预设已经包含了你熟悉的 <C-n>, <C-p>, <C-y> (确认), <C-Space> (触发)
-			preset = "default",
+			preset = "none",
 			["<CR>"] = { "accept", "fallback" },
 			["<Tab>"] = {
 				function(cmp)
@@ -44,7 +44,10 @@ return { -- Autocompletion
 				"fallback",
 			},
 			["<S-Tab>"] = { "snippet_backward", "fallback" },
-
+			["<C-h>"] = { "show_signature", "hide_signature", "fallback" },
+			-- 建议适配你的 jkli 布局进行补全项选择
+			["<C-i>"] = { "select_prev", "fallback" },
+			["<C-k>"] = { "select_next", "show_signature", "fallback" },
 			-- 补充你旧配置中的文档滚动
 			["<C-u>"] = { "scroll_documentation_up", "fallback" },
 			["<C-d>"] = { "scroll_documentation_down", "fallback" },

@@ -17,15 +17,18 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	spec = {
 		{ import = "plugins.coding.treesitter" },
-    { import = "plugins.coding.lsp" },
-    { import = "plugins.coding.cmp" },
+		{ import = "plugins.coding.lsp" },
+		{ import = "plugins.coding.cmp" },
+		{ import = "plugins.coding.trouble" },
 		{ import = "plugins.editor.tmux" },
 		{ import = "plugins.editor.nvim-tree" },
 		{ import = "plugins.editor.lualine" },
-    { import = 'plugins.formatting.conform' },
+		{ import = "plugins.formatting.conform" },
+		{ import = "plugins.languages.astro" },
+		{ import = "plugins.languages.typescript" },
 		{ import = "plugins.ui.colorscheme" },
 		{ import = "plugins.ui.dressing" },
-		{ import = "plugins.ui.dashboard" }
+		{ import = "plugins.ui.dashboard" },
 	},
 	checker = { enabled = false },
 })
