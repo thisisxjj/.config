@@ -76,6 +76,7 @@ return {
 					map("<leader>ca", vim.lsp.buf.code_action, "Code Action", { "n", "x" })
 					map("gd", vim.lsp.buf.definition, "Goto Definition")
 					map("gr", vim.lsp.buf.references, "Goto Declaration")
+					map("gh", vim.lsp.buf.hover, "[G]o [H]over Documentation")
 
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					-- 1. 跳转到声明 (C/C++常用，TS/JS不支持)
