@@ -55,6 +55,7 @@ return { -- Autocompletion
 			-- 补充你旧配置中的 Snippet 节点跳转逻辑 (用 <C-l> 前进，<C-h> 后退)
 			["<C-l>"] = { "snippet_forward", "fallback" },
 			["<C-j>"] = { "snippet_backward", "fallback" },
+			["<C-Space>"] = { "show", "show_documentation", "hide_documentation", "fallback" },
 		},
 
 		appearance = {
@@ -88,4 +89,17 @@ return { -- Autocompletion
 
 		signature = { enabled = true },
 	},
+	config = function(_, opts)
+		require("blink.cmp").setup(opts)
+		local blink = require("blink.cmp")
+
+		-- 2. Normal 模式下的 Toggle 逻辑
+		vim.keymap.set("n", "<C-h>", function()
+			if blink.is_signature_visible() then
+				blink.hide_signature()
+			else
+				blink.show_signature()
+			end
+		end, { desc = "Blink: Toggle Signature" })
+	end,
 }

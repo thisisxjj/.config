@@ -1,6 +1,7 @@
 return {
 	{
 		"neovim/nvim-lspconfig",
+		dependencies = { "yioneko/nvim-vtsls" },
 		opts = function(_, opts)
 			opts.servers = opts.servers or {}
 
