@@ -47,7 +47,15 @@ return { -- Autocompletion
 			["<C-h>"] = { "show_signature", "hide_signature", "fallback" },
 			-- 建议适配你的 jkli 布局进行补全项选择
 			["<C-i>"] = { "select_prev", "fallback" },
-			["<C-k>"] = { "select_next", "show_signature", "fallback" },
+			-- ["<C-k>"] = { "select_next", "show_signature", "fallback" },
+			["<C-k>"] = {
+				function(cmp)
+					if cmp.is_menu_visible() then
+						return cmp.select_next()
+					end
+				end,
+				"fallback",
+			},
 			-- 补充你旧配置中的文档滚动
 			["<C-u>"] = { "scroll_documentation_up", "fallback" },
 			["<C-d>"] = { "scroll_documentation_down", "fallback" },

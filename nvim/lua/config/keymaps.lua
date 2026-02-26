@@ -195,3 +195,7 @@ keymap("n", "<leader>tq", ":tabclose<CR>")
 keymap("n", "<leader>ts", ":tab split<CR>")
 keymap("n", "<leader><Tab>", ":tabnext<CR>")
 keymap("n", "<leader><S-Tab>", ":tabprevious<CR>")
+
+keymap("i", "<C-j>", "<Left>", opts)
+keymap("i", "<C-l>", "<Right>", opts)
+keymap("i", "<C-k>", "<C-o>o", opts)
