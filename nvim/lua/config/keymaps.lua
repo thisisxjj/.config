@@ -62,10 +62,24 @@ keymap("n", "H", "N", opts)
 keymap("n", "<leader>w", ":w<cr>", opts)
 keymap({ "n", "t" }, "<leader>q", ":q<cr>", opts)
 
+-- Buffer functions
+local function delete_other_buffers()
+	local current_buf = vim.api.nvim_get_current_buf()
+	local buffers = vim.api.nvim_list_bufs()
+
+	for _, buf in ipairs(buffers) do
+		if buf ~= current_buf and vim.api.nvim_buf_is_loaded(buf) then
+			vim.api.nvim_buf_delete(buf, {})
+		end
+	end
+end
+
 -- buffer
 keymap("n", "<leader>b'", ":bnext<CR>", opts)
 keymap("n", "<leader>b;", ":bprevious<CR>", opts)
-keymap("n", "<C-c>", ":bwipeout<CR>", opts)
+keymap("n", "<leader>bD", ":bwipeout<CR>", opts)
+keymap("n", "<leader>bd", ":bdelete<CR>", opts)
+keymap("n", "<leader>bo", delete_other_buffers, opts)
 
 -- Yank to system clipboard
 keymap("n", "<leader>y", '"+y')
@@ -198,4 +212,7 @@ keymap("n", "<leader><S-Tab>", ":tabprevious<CR>")
 
 keymap("i", "<C-j>", "<Left>", opts)
 keymap("i", "<C-l>", "<Right>", opts)
-keymap("i", "<C-k>", "<C-o>o", opts)
+keymap("i", "<C-i>", "<Up>", opts)
+keymap("i", "<C-k>", "<Down>", opts)
+keymap("i", "<C-o>", "<C-o>o", opts)
+keymap("n", "<Esc>", "<cmd>noh<cr><Esc>", opts)
