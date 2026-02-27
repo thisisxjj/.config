@@ -24,6 +24,7 @@ require("lazy").setup({
 		{ import = "plugins.editor.tmux" },
 		{ import = "plugins.editor.nvim-tree" },
 		{ import = "plugins.editor.lualine" },
+		{ import = "plugins.editor.telescope" },
 		{ import = "plugins.formatting.conform" },
 		{ import = "plugins.languages.astro" },
 		{ import = "plugins.languages.typescript" },

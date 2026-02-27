@@ -63,6 +63,12 @@ return {
 			},
 		},
 		config = function(_, opts)
+			-- 禁用 gr 开头默认快捷键
+			pcall(vim.keymap.del, "n", "gra")
+			pcall(vim.keymap.del, "n", "grn")
+			pcall(vim.keymap.del, "n", "grr")
+			pcall(vim.keymap.del, "n", "gri")
+			pcall(vim.keymap.del, "n", "grt")
 			-- 1. 全局 LspAttach (处理跳转、重命名，以及高亮和内联提示)
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
@@ -72,21 +78,34 @@ return {
 						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 					end
 
-					map("grn", vim.lsp.buf.rename, "[R]e[n]ame")
+					map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
 					map("<leader>ca", vim.lsp.buf.code_action, "Code Action", { "n", "x" })
-					map("gd", vim.lsp.buf.definition, "Goto Definition")
-					map("gr", vim.lsp.buf.references, "Goto Declaration")
-					map("gh", vim.lsp.buf.hover, "[G]o [H]over Documentation")
+					map("gh", vim.lsp.buf.hover, "[H]over")
+
+					-- gd: 跳转到定义
+					map("gd", function()
+						require("telescope.builtin").lsp_definitions({ reuse_win = true })
+					end, "Goto Definition")
+
+					-- gr: 跳转到引用 (修复了之前的 desc 描述)
+					map("gr", function()
+						require("telescope.builtin").lsp_references({ include_current_line = false })
+					end, "Goto References")
+
+					-- gI: 跳转到实现 (面向对象语言中极其好用)
+					map("gI", function()
+						require("telescope.builtin").lsp_implementations({ reuse_win = true })
+					end, "Goto Implementation")
 
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
-					-- 1. 跳转到声明 (C/C++常用，TS/JS不支持)
-					-- 2. 跳转到类型定义 (TypeScript / Vue 开发神器！)
-					-- 当你的光标在一个变量上时，跳到定义它 TS 接口 (Interface/Type) 的地方
+					-- gt: 跳转到类型定义 (TypeScript / Vue 开发神器！)
 					if
 						client
 						and client:supports_method(vim.lsp.protocol.Methods.textDocument_typeDefinition, event.buf)
 					then
-						map("gt", vim.lsp.buf.type_definition, "Goto T[y]pe Definition")
+						map("gt", function()
+							require("telescope.builtin").lsp_type_definitions({ reuse_win = true })
+						end, "Goto T[y]pe Definition")
 					end
 					-- === 相同符号自动高亮 (使用标准常量) ===
 					if
