@@ -212,7 +212,6 @@ keymap("n", "<leader><S-Tab>", ":tabprevious<CR>")
 
 keymap("i", "<C-j>", "<Left>", opts)
 keymap("i", "<C-l>", "<Right>", opts)
-keymap("i", "<C-i>", "<Up>", opts)
 keymap("i", "<C-k>", "<Down>", opts)
 keymap("i", "<C-o>", "<C-o>o", opts)
 keymap("n", "<Esc>", "<cmd>noh<cr><Esc>", opts)
