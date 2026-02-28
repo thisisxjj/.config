@@ -102,9 +102,9 @@ keymap(modes, "<leader>s", "<Nop>", opts)
 -- Re-arrange splits (still under leader+s*)
 -- =========================
 -- place windows up/down
-keymap("n", "<leader>sh", "<Cmd>set splitbelow<CR><Cmd>split<CR>", opts)
+keymap("n", "sh", "<Cmd>set splitbelow<CR><Cmd>split<CR>", opts)
 -- place windows left/right
-keymap("n", "<leader>sv", "<Cmd>set splitright<CR><Cmd>vsplit<CR>", opts)
+keymap("n", "sv", "<Cmd>set splitright<CR><Cmd>vsplit<CR>", opts)
 -- ==========================================================================
 --  第四部分：文本对象修复 (Text Objects)
 --  逻辑：修复 diw, ci( 等操作
