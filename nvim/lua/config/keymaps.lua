@@ -112,11 +112,12 @@ keymap("n", "sv", "<Cmd>set splitright<CR><Cmd>vsplit<CR>", opts)
 
 -- 在 Operator Pending 模式下，将 n 映射为 i (inner)
 -- 效果：按 dnw 等同于原来的 diw (删除单词内部)
-keymap("o", "n", "i", opts)
+local native_objs = { "w", "W", "p", "s" }
 
--- 针对 Visual 模式的 inner 选择 (例如 vnw 选中单词)
-keymap("x", "n", "i", opts)
-
+for _, obj in ipairs(native_objs) do
+	-- 拦截 nw/np/ns 等组合键，强制翻译为原生的 iw/ip/is
+	vim.keymap.set({ "o", "x" }, "n" .. obj, "i" .. obj, { noremap = true, silent = true })
+end
 -- ==========================================================================
 --  第五部分：高级移动修复 (Advanced Fixes)
 --  逻辑：修复 g 键和 z 键的逻辑断层
@@ -201,8 +202,8 @@ keymap("n", "gn", "gi", opts)
 -- ==========================================================================
 
 -- 选中行下移/上移（与 k/i 方向保持一致）
-keymap("v", "<C-k>", ":m '>+1<CR>gv=gv", opts)
-keymap("v", "<C-i>", ":m '<-2<CR>gv=gv", opts)
+-- keymap("v", "<C-k>", ":m '>+1<CR>gv=gv", opts)
+-- keymap("v", "<C-i>", ":m '<-2<CR>gv=gv", opts)
 
 keymap("n", "<leader>tn", ":tabnew<CR>")
 keymap("n", "<leader>tq", ":tabclose<CR>")
@@ -215,3 +216,14 @@ keymap("i", "<C-l>", "<Right>", opts)
 keymap("i", "<C-k>", "<Down>", opts)
 keymap("i", "<C-o>", "<C-o>o", opts)
 keymap("n", "<Esc>", "<cmd>noh<cr><Esc>", opts)
+
+local comment_opts = { remap = true, silent = true, desc = "Toggle comment" }
+
+-- Normal (普通) 模式：按 Ctrl+/ 触发 gcc
+keymap("n", "<C-/>", "gcc", comment_opts)
+
+-- Visual (可视) 模式：按 Ctrl+/ 触发 gc
+keymap("v", "<C-/>", "gc", comment_opts)
+
+-- Insert (插入) 模式：按 Ctrl+/ 退回普通模式注释当前行，然后用 A 回到行尾继续输入
+keymap("i", "<C-/>", "<Esc>gccA", comment_opts)

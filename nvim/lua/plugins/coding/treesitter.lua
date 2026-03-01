@@ -60,28 +60,7 @@ return {
 			},
 			textobjects = {
 				select = {
-					enable = true,
-					lookahead = true,
-					keymaps = {
-						["aa"] = { query = "@parameter.outer", desc = "Select outer part of a parameter/argument" },
-						["na"] = { query = "@parameter.inner", desc = "Select inner part of a parameter/argument" },
-						["ai"] = { query = "@conditional.outer", desc = "Select outer part of a conditional" },
-						["ni"] = { query = "@conditional.inner", desc = "Select inner part of a conditional" },
-						["al"] = { query = "@loop.outer", desc = "Select outer part of a loop" },
-						["nl"] = { query = "@loop.inner", desc = "Select inner part of a loop" },
-						["af"] = { query = "@call.outer", desc = "Select outer part of a function call" },
-						["nf"] = { query = "@call.inner", desc = "Select inner part of a function call" },
-						["am"] = {
-							query = "@function.outer",
-							desc = "Select outer part of a method/function definition",
-						},
-						["nm"] = {
-							query = "@function.inner",
-							desc = "Select inner part of a method/function definition",
-						},
-						["ac"] = { query = "@class.outer", desc = "Select outer part of a class" },
-						["nc"] = { query = "@class.inner", desc = "Select inner part of a class" },
-					},
+					enable = false,
 				},
 				move = {
 					enable = true,
