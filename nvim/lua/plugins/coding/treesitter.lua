@@ -44,6 +44,7 @@ return {
 				"vimdoc",
 				"yaml",
 				"xml",
+				"vue",
 			},
 			sync_install = false,
 			auto_install = true,

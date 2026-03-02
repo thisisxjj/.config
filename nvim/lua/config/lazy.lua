@@ -28,6 +28,7 @@ require("lazy").setup({
 		{ import = "plugins.editor.telescope" },
 		{ import = "plugins.formatting.conform" },
 		{ import = "plugins.languages.astro" },
+		{ import = "plugins.languages.vue" },
 		{ import = "plugins.languages.typescript" },
 		{ import = "plugins.ui.colorscheme" },
 		{ import = "plugins.ui.dressing" },

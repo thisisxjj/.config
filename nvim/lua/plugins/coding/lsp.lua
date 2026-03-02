@@ -33,7 +33,7 @@ return {
 				intelephense = {},
 				neocmake = {},
 				tailwindcss = {},
-				volar = {},
+				vue_ls = {},
 				-- vtsls 作为空桩位，准备接收 typescript.lua 和 astro.lua 的插件注入
 				vtsls = {},
 
@@ -41,13 +41,22 @@ return {
 				eslint = {
 					settings = { workingDirectory = { mode = "auto" } },
 					on_attach = function(client, bufnr)
+						-- 1. 禁用 ESLint 的格式化能力，将排版权柄完全交给 Prettier
 						client.server_capabilities.documentFormattingProvider = false
+
+						-- 2. 注册一键修复命令
 						vim.api.nvim_buf_create_user_command(bufnr, "EslintFixAll", function()
 							client.request("workspace/executeCommand", {
 								command = "eslint.applyAllFixes",
 								arguments = { { uri = vim.uri_from_bufnr(bufnr) } },
 							})
 						end, { desc = "ESLint: Fix all autofixable problems" })
+
+						-- 🌟 核心新增：监听文件保存事件，自动执行上面的修复命令
+						vim.api.nvim_create_autocmd("BufWritePre", {
+							buffer = bufnr,
+							command = "EslintFixAll",
+						})
 					end,
 				},
 

@@ -7,9 +7,11 @@ return {
 
 			opts.servers.tsserver = { enabled = false }
 			opts.servers.ts_ls = { enabled = false }
-			opts.servers.vtsls = opts.servers.vtsls or {}
 
-			opts.servers.vtsls.filetypes = {
+			opts.servers.vtsls = opts.servers.vtsls or {}
+			opts.servers.vtsls.filetypes = opts.servers.vtsls.filetypes or {}
+
+			local base_ft = {
 				"javascript",
 				"javascriptreact",
 				"javascript.jsx",
@@ -18,7 +20,15 @@ return {
 				"typescript.tsx",
 			}
 
-			opts.servers.vtsls.settings = {
+			-- 循环追加，绝对不会覆盖掉 vue.lua 里加进去的 "vue"
+			for _, ft in ipairs(base_ft) do
+				if not vim.tbl_contains(opts.servers.vtsls.filetypes, ft) then
+					table.insert(opts.servers.vtsls.filetypes, ft)
+				end
+			end
+
+			-- 🌟 修复 2：使用 vim.tbl_deep_extend 安全合并 settings，绝不能用 "=" 直接覆盖！
+			local vtsls_settings = {
 				complete_function_calls = true,
 				vtsls = {
 					enableMoveToFileCodeAction = true,
@@ -41,7 +51,11 @@ return {
 					},
 				},
 			}
+			-- 将上面的配置安全地合并进现有的 settings 中，保护 Vue 插件不被删除
+			opts.servers.vtsls.settings =
+				vim.tbl_deep_extend("force", opts.servers.vtsls.settings or {}, vtsls_settings)
 
+			-- 下面保留你原本的 js 继承 ts 逻辑
 			opts.servers.vtsls.settings.javascript = vim.tbl_deep_extend(
 				"force",
 				{},
