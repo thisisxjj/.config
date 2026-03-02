@@ -81,15 +81,15 @@ return {
 					map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
 					map("<leader>ca", vim.lsp.buf.code_action, "Code Action", { "n", "x" })
 					map("gh", vim.lsp.buf.hover, "[H]over")
-
 					-- gd: 跳转到定义
-					map("gd", function()
-						require("telescope.builtin").lsp_definitions({ reuse_win = true })
-					end, "Goto Definition")
+					map("gd", vim.lsp.buf.definition, "Goto Definition")
 
 					-- gr: 跳转到引用 (修复了之前的 desc 描述)
 					map("gr", function()
-						require("telescope.builtin").lsp_references({ include_current_line = false })
+						require("telescope.builtin").lsp_references({
+							include_current_line = false,
+							file_ignore_patterns = {},
+						})
 					end, "Goto References")
 
 					-- gI: 跳转到实现 (面向对象语言中极其好用)
