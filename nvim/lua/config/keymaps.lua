@@ -51,7 +51,8 @@ keymap(modes, "L", "$", opts)
 keymap("n", "n", "i", opts)
 -- N: 在行首插入 (原 I)
 keymap("n", "N", "I", opts)
-
+-- 插入模式 块插入
+keymap("x", "N", "I", opts)
 -- --- 搜索跳转 (Search) ---
 -- h: 搜索下一个 (Hunt, 原 n) - 因为 h 键的左移功能被 j 拿走了，现在 h 是空的
 keymap("n", "h", "n", opts)
