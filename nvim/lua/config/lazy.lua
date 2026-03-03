@@ -30,6 +30,7 @@ require("lazy").setup({
 		{ import = "plugins.languages.astro" },
 		{ import = "plugins.languages.vue" },
 		{ import = "plugins.languages.typescript" },
+		{ import = "plugins.languages.python" },
 		{ import = "plugins.ui.colorscheme" },
 		{ import = "plugins.ui.dressing" },
 		{ import = "plugins.ui.dashboard" },

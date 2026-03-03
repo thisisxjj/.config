@@ -30,6 +30,7 @@ return {
 				astro = {},
 				cssls = {},
 				pyright = {},
+				ruff = {},
 				intelephense = {},
 				neocmake = {},
 				tailwindcss = {},
