@@ -21,6 +21,7 @@ require("lazy").setup({
 		{ import = "plugins.coding.lsp" },
 		{ import = "plugins.coding.cmp" },
 		{ import = "plugins.coding.trouble" },
+		{ import = "plugins.editor.gitsigns" },
 		{ import = "plugins.editor.tmux" },
 		{ import = "plugins.editor.mini" },
 		{ import = "plugins.editor.nvim-tree" },
