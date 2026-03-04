@@ -2,6 +2,7 @@ return {
 	{
 		"nvim-mini/mini.nvim",
 		config = function()
+			local gen_spec = require("mini.ai").gen_spec
 			-- ====================================================================
 			-- 1. mini.ai 适配
 			-- 核心思路：让 mini.ai 原生支持你的 'n' (inner) 逻辑
@@ -15,12 +16,32 @@ return {
 					around = "a",
 
 					-- 下面这些是进阶指令，如果有冲突可以改，通常保持默认即可
-					around_next = "an",
-					inside_next = "nn",
+					around_next = "ah",
+					inside_next = "nh",
 					around_last = "ap",
 					inside_last = "np",
 					goto_left = "g[",
 					goto_right = "g]",
+				},
+				-- 🌟 替代 nvim-treesitter-textobjects 的高级语法树匹配
+				custom_textobjects = {
+					-- 函数参数 (Argument) -> 按键: a
+					a = gen_spec.treesitter({ a = "@parameter.outer", i = "@parameter.inner" }),
+
+					-- 条件判断 (If/Else) -> 按键: i
+					i = gen_spec.treesitter({ a = "@conditional.outer", i = "@conditional.inner" }),
+
+					-- 循环体 (For/While) -> 按键: l
+					l = gen_spec.treesitter({ a = "@loop.outer", i = "@loop.inner" }),
+
+					-- 函数调用 (Function Call) -> 按键: f
+					f = gen_spec.treesitter({ a = "@call.outer", i = "@call.inner" }),
+
+					-- 函数/方法定义 (Definition) -> 按键: m
+					m = gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
+
+					-- 类定义 (Class) -> 按键: c
+					c = gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
 				},
 			})
 
