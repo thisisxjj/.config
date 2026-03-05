@@ -61,7 +61,7 @@ keymap("n", "H", "N", opts)
 
 -- 保存关闭当前文件
 keymap("n", "<leader>w", ":w<cr>", opts)
-keymap({ "n", "t" }, "<leader>q", ":q<cr>", opts)
+keymap({ "n" }, "<leader>q", ":q<cr>", opts)
 
 -- Buffer functions
 local function delete_other_buffers()
