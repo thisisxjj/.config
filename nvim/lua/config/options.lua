@@ -36,4 +36,13 @@ vim.o.breakindent = true -- prevent line wrapping
 vim.opt.fillchars = { eob = " " }
 vim.o.laststatus = 3 -- global statusline
 
+-- ==========================================
+-- 代码折叠设置 (基于 Neovim 原生 Treesitter)
+-- ==========================================
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevel = 99 -- 默认层级，配合下面的 foldlevelstart 使用
+vim.opt.foldlevelstart = 99 -- 默认打开文件时，展开所有代码（而不是全缩起来）
+vim.opt.foldenable = true -- 开启折叠功能
+
 vim.diagnostic.config({ virtual_text = true }) -- inline diagnostics

@@ -49,6 +49,8 @@ return {
 			-- 2. mini.surround 适配 (保持不变，gs 前缀非常安全)
 			-- ====================================================================
 			require("mini.surround").setup({
+				-- 将搜索范围扩大，防止大型组件首尾相距太远
+				n_lines = 100,
 				mappings = {
 					add = "gsa",
 					delete = "gsd",
@@ -57,6 +59,26 @@ return {
 					highlight = "gsh",
 					replace = "gsr",
 					update_n_lines = "gsn",
+				},
+				custom_surroundings = {
+					-- 覆盖默认的 t (Tag)，完美兼容 TSX
+					t = {
+						input = { "<(%w-)%s*[^>]*>.-</%1>", "^<.->().*()</[^>]->$" },
+						output = function()
+							-- 🌟 关键修复：用 require 直接调取模块内部的方法，彻底干掉全局变量报错！
+							local tag = require("mini.surround").user_input("Tag name")
+							if tag == nil then
+								return nil
+							end
+							return { left = "<" .. tag .. ">", right = "</" .. tag .. ">" }
+						end,
+					},
+
+					-- 附赠处理 React Fragment: <>...</>
+					F = {
+						input = { "<>.-</>", "^<>().*()</>$" },
+						output = { left = "<>", right = "</>" },
+					},
 				},
 			})
 
