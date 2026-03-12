@@ -94,6 +94,45 @@ return {
 					-- gd: 跳转到定义
 					map("gd", vim.lsp.buf.definition, "Goto Definition")
 
+					-- 1. 你原有的 Normal 模式 gw (查普通单词)
+					vim.keymap.set("n", "gw", function()
+						require("telescope.builtin").grep_string({ word_match = "-w" })
+					end, { desc = "Telescope: [G]rep [W]ord under cursor" })
+
+					-- 2. 🌟 新增的 Visual 模式 gw (查带有特殊符号的路径/长字符串)
+					vim.keymap.set("v", "gw", function()
+						-- 极客黑魔法：瞬间把选中的文本复制到寄存器，再喂给 Telescope，然后把寄存器恢复原样
+						local saved_reg = vim.fn.getreg("v")
+						vim.cmd('noau normal! "vy"')
+						local text = vim.fn.getreg("v")
+						vim.fn.setreg("v", saved_reg)
+
+						require("telescope.builtin").grep_string({ search = text })
+					end, { desc = "Telescope: Grep selected text" })
+					local builtin = require("telescope.builtin")
+
+					-- 1. Normal 模式：自动抓取光标下的路径，并在文件树中模糊搜索
+					vim.keymap.set("n", "gF", function()
+						-- <cfile> 是 Vim 原生专门用来抓取光标下"文件路径"的黑魔法
+						local current_file = vim.fn.expand("<cfile>")
+
+						-- 顺手清理一下可能抓到的无用前缀（比如前端常用的 @/ 或 ~）
+						-- 这样 Telescope 就能纯粹用后面的真实文件名去 fuzzy match
+						local clean_file = current_file:gsub("^[@~]/", "")
+
+						builtin.find_files({ default_text = clean_file })
+					end, { desc = "Telescope: Find [F]ile under cursor" })
+
+					-- 2. Visual 模式：选中任意一段长路径直接搜文件
+					vim.keymap.set("v", "gF", function()
+						local saved_reg = vim.fn.getreg("v")
+						vim.cmd('noau normal! "vy"')
+						local text = vim.fn.getreg("v")
+						vim.fn.setreg("v", saved_reg)
+
+						local clean_text = text:gsub("^[@~]/", "")
+						builtin.find_files({ default_text = clean_text })
+					end, { desc = "Telescope: Find selected [F]ile" })
 					-- gr: 跳转到引用 (修复了之前的 desc 描述)
 					map("gr", function()
 						require("telescope.builtin").lsp_references({
