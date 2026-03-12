@@ -17,6 +17,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	spec = {
 		{ import = "plugins.coding.autopairs" },
+		{ import = "plugins.coding.autotag" },
 		{ import = "plugins.coding.treesitter" },
 		{ import = "plugins.coding.lsp" },
 		{ import = "plugins.coding.cmp" },
