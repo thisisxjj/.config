@@ -73,67 +73,69 @@ return {
 			},
 		},
 		config = function(_, opts)
-			-- 禁用 gr 开头默认快捷键
-			pcall(vim.keymap.del, "n", "gra")
-			pcall(vim.keymap.del, "n", "grn")
-			pcall(vim.keymap.del, "n", "grr")
-			pcall(vim.keymap.del, "n", "gri")
-			pcall(vim.keymap.del, "n", "grt")
-			-- 1. 全局 LspAttach (处理跳转、重命名，以及高亮和内联提示)
+			-- =====================================================================
+			-- 禁用默认快捷键
+			-- =====================================================================
+			local default_keys = { "gra", "grn", "grr", "gri", "grt" }
+			for _, key in ipairs(default_keys) do
+				pcall(vim.keymap.del, "n", key)
+			end
+
+			-- =====================================================================
+			-- Telescope 全局搜索快捷键
+			-- 修复说明：这些操作不依赖 LSP，且没有 buffer 限制，因此移出 LspAttach 避免重复注册
+			-- =====================================================================
+			vim.keymap.set("n", "gw", function()
+				require("telescope.builtin").grep_string({ word_match = "-w" })
+			end, { desc = "Telescope: [G]rep [W]ord under cursor" })
+
+			vim.keymap.set("v", "gw", function()
+				local saved_reg = vim.fn.getreg("v")
+				vim.cmd('noau normal! "vy"')
+				local text = vim.fn.getreg("v")
+				vim.fn.setreg("v", saved_reg)
+
+				require("telescope.builtin").grep_string({ search = text })
+			end, { desc = "Telescope: Grep selected text" })
+
+			vim.keymap.set("n", "gF", function()
+				local current_file = vim.fn.expand("<cfile>")
+				local clean_file = current_file:gsub("^[@~]/", "")
+				require("telescope.builtin").find_files({ default_text = clean_file })
+			end, { desc = "Telescope: Find [F]ile under cursor" })
+
+			vim.keymap.set("v", "gF", function()
+				local saved_reg = vim.fn.getreg("v")
+				vim.cmd('noau normal! "vy"')
+				local text = vim.fn.getreg("v")
+				vim.fn.setreg("v", saved_reg)
+
+				local clean_text = text:gsub("^[@~]/", "")
+				require("telescope.builtin").find_files({ default_text = clean_text })
+			end, { desc = "Telescope: Find selected [F]ile" })
+
+			-- =====================================================================
+			-- LSP Attach 事件处理 (处理跳转、重命名、高亮、内联提示)
+			-- =====================================================================
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
 				callback = function(event)
+					local client = vim.lsp.get_client_by_id(event.data.client_id)
+					if not client then
+						return
+					end
+
 					local map = function(keys, func, desc, mode)
 						mode = mode or "n"
 						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 					end
 
+					-- 1. 基础跳转与操作
 					map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
 					map("<leader>ca", vim.lsp.buf.code_action, "Code Action", { "n", "x" })
 					map("gh", vim.lsp.buf.hover, "[H]over")
-					-- gd: 跳转到定义
 					map("gd", vim.lsp.buf.definition, "Goto Definition")
 
-					-- 1. 你原有的 Normal 模式 gw (查普通单词)
-					vim.keymap.set("n", "gw", function()
-						require("telescope.builtin").grep_string({ word_match = "-w" })
-					end, { desc = "Telescope: [G]rep [W]ord under cursor" })
-
-					-- 2. 🌟 新增的 Visual 模式 gw (查带有特殊符号的路径/长字符串)
-					vim.keymap.set("v", "gw", function()
-						-- 极客黑魔法：瞬间把选中的文本复制到寄存器，再喂给 Telescope，然后把寄存器恢复原样
-						local saved_reg = vim.fn.getreg("v")
-						vim.cmd('noau normal! "vy"')
-						local text = vim.fn.getreg("v")
-						vim.fn.setreg("v", saved_reg)
-
-						require("telescope.builtin").grep_string({ search = text })
-					end, { desc = "Telescope: Grep selected text" })
-					local builtin = require("telescope.builtin")
-
-					-- 1. Normal 模式：自动抓取光标下的路径，并在文件树中模糊搜索
-					vim.keymap.set("n", "gF", function()
-						-- <cfile> 是 Vim 原生专门用来抓取光标下"文件路径"的黑魔法
-						local current_file = vim.fn.expand("<cfile>")
-
-						-- 顺手清理一下可能抓到的无用前缀（比如前端常用的 @/ 或 ~）
-						-- 这样 Telescope 就能纯粹用后面的真实文件名去 fuzzy match
-						local clean_file = current_file:gsub("^[@~]/", "")
-
-						builtin.find_files({ default_text = clean_file })
-					end, { desc = "Telescope: Find [F]ile under cursor" })
-
-					-- 2. Visual 模式：选中任意一段长路径直接搜文件
-					vim.keymap.set("v", "gF", function()
-						local saved_reg = vim.fn.getreg("v")
-						vim.cmd('noau normal! "vy"')
-						local text = vim.fn.getreg("v")
-						vim.fn.setreg("v", saved_reg)
-
-						local clean_text = text:gsub("^[@~]/", "")
-						builtin.find_files({ default_text = clean_text })
-					end, { desc = "Telescope: Find selected [F]ile" })
-					-- gr: 跳转到引用 (修复了之前的 desc 描述)
 					map("gr", function()
 						require("telescope.builtin").lsp_references({
 							include_current_line = false,
@@ -141,26 +143,19 @@ return {
 						})
 					end, "Goto References")
 
-					-- gI: 跳转到实现 (面向对象语言中极其好用)
 					map("gI", function()
 						require("telescope.builtin").lsp_implementations({ reuse_win = true })
 					end, "Goto Implementation")
 
-					local client = vim.lsp.get_client_by_id(event.data.client_id)
-					-- gt: 跳转到类型定义 (TypeScript / Vue 开发神器！)
-					if
-						client
-						and client:supports_method(vim.lsp.protocol.Methods.textDocument_typeDefinition, event.buf)
-					then
+					-- 2. 类型定义跳转 (TypeScript / Vue 开发神器)
+					if client:supports_method(vim.lsp.protocol.Methods.textDocument_typeDefinition, event.buf) then
 						map("gt", function()
 							require("telescope.builtin").lsp_type_definitions({ reuse_win = true })
 						end, "Goto T[y]pe Definition")
 					end
-					-- === 相同符号自动高亮 (使用标准常量) ===
-					if
-						client
-						and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf)
-					then
+
+					-- 3. 相同符号自动高亮
+					if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
 						local highlight_augroup =
 							vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
 
@@ -185,10 +180,8 @@ return {
 						})
 					end
 
-					-- === 内联提示切换开关 (使用标准常量) ===
-					if
-						client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf)
-					then
+					-- 4. 内联提示切换开关
+					if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
 						map("<leader>th", function()
 							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
 						end, "Toggle Inlay Hints")
@@ -196,14 +189,18 @@ return {
 				end,
 			})
 
-			-- 2. 核心能力合并 (Capabilities)
+			-- =====================================================================
+			-- 核心能力合并 (Capabilities)
+			-- =====================================================================
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 			capabilities.textDocument.foldingRange = {
 				dynamicRegistration = false,
 				lineFoldingOnly = true,
 			}
 
-			-- 3. Mason 统一工具安装管理
+			-- =====================================================================
+			-- Mason 统一工具安装管理
+			-- =====================================================================
 			require("mason-tool-installer").setup({
 				ensure_installed = {
 					-- 语言服务器 (LSP)
@@ -236,9 +233,11 @@ return {
 				},
 			})
 
-			-- 4. 极致原生的发射舱 (遍历所有合并好的 opts.servers 并在底层启动)
+			-- =====================================================================
+			-- 极致原生的发射舱 (遍历启动服务器)
+			-- =====================================================================
 			for name, server_config in pairs(opts.servers or {}) do
-				-- 💡 拦截检查：过滤掉被模块化文件声明为 { enabled = false } 的服务器 (如 tsserver)
+				-- 拦截检查：过滤掉被模块化文件声明为 { enabled = false } 的服务器
 				if server_config.enabled ~= false then
 					server_config.capabilities =
 						vim.tbl_deep_extend("force", {}, capabilities, server_config.capabilities or {})
