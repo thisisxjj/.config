@@ -11,8 +11,8 @@ return {
 		input = { enabled = false },
 
 		-- 保留不冲突的体验增强功能（按需开启）
-		indent = { enabled = true }, -- 缩进线
-		words = { enabled = true }, -- 相同单词高亮
+		indent = { enabled = false }, -- 缩进线
+		words = { enabled = false }, -- 相同单词高亮
 		scroll = { enabled = true }, -- 平滑滚动
 	},
 	keys = {

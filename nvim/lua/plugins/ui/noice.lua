@@ -29,16 +29,23 @@ return {
 				},
 				view = "mini",
 			},
+			{
+				filter = {
+					event = "msg_show",
+					min_height = 20, -- 触发条件：只要输出的行数超过 20 行，就判定为长消息
+				},
+				view = "popup", -- 魔法在这里：让它以悬浮窗 (popup) 的形式展现
+			},
 		},
 		presets = {
 			bottom_search = false,
 			command_palette = true,
-			long_message_to_split = true,
+			long_message_to_split = false,
 		},
 		views = {
 			cmdline_popup = {
 				position = {
-					row = "50%",
+					row = "40%",
 					col = "50%",
 				},
 			},
@@ -51,24 +58,28 @@ return {
 		},
 	},
 	keys = {
-		{ "<leader>sn", "", desc = "+noice" },
+		-- 1. 最核心的：一键呼出历史消息搜索 (原先的 <leader>snt)
+		-- 改成 <leader>m (代表 Messages)，只有两个键，极其顺手
+		{ "<leader>m", "<cmd>Noice telescope<cr>", desc = "Messages History (Noice)" },
+		-- 2. 清除屏幕上的所有残留通知和消息 (原先的 <leader>snd)
 		{
-			"<S-Enter>",
+			"<leader>dm",
 			function()
-				require("noice").redirect(vim.fn.getcmdline())
+				require("noice").cmd("dismiss")
 			end,
-			mode = "c",
-			desc = "Redirect Cmdline",
+			desc = "Dismiss Messages",
 		},
+
+		-- 3. 查看上一条一闪而过的消息
 		{
-			"<leader>snl",
+			"<leader>lm",
 			function()
 				require("noice").cmd("last")
 			end,
-			desc = "Noice Last Message",
+			desc = "Last Message",
 		},
-		-- 使用 Telescope 来搜索 Noice 拦截到的长消息
-		{ "<leader>snt", "<cmd>Noice telescope<cr>", desc = "Noice History (Telescope)" },
+
+		-- 4. 保持 LSP 悬浮窗滚动不变 (因为 Ctrl 组合键在输入模式下是最合理的)
 		{
 			"<c-f>",
 			function()
@@ -92,6 +103,14 @@ return {
 			expr = true,
 			desc = "Scroll Backward",
 			mode = { "i", "n", "s" },
+		},
+		{
+			"<S-Enter>",
+			function()
+				require("noice").redirect(vim.fn.getcmdline())
+			end,
+			mode = "c",
+			desc = "Redirect Cmdline",
 		},
 	},
 	config = function(_, opts)
