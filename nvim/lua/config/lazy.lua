@@ -34,6 +34,7 @@ require("lazy").setup({
 		{ import = "plugins.languages.astro" },
 		{ import = "plugins.languages.docker" },
 		{ import = "plugins.languages.vue" },
+		{ import = "plugins.languages.tailwind" },
 		{ import = "plugins.languages.typescript" },
 		{ import = "plugins.languages.python" },
 		{ import = "plugins.linting.core" },
