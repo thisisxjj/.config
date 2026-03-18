@@ -131,10 +131,15 @@ return {
 					end
 
 					-- 1. 基础跳转与操作
-					map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
+					map("<leader>cr", vim.lsp.buf.rename, "[R]e[n]ame")
 					map("<leader>ca", vim.lsp.buf.code_action, "Code Action", { "n", "x" })
-					map("gh", vim.lsp.buf.hover, "[H]over")
-					map("gd", vim.lsp.buf.definition, "Goto Definition")
+					map("gh", vim.lsp.buf.hover, "Goto [H]over")
+					map("<C-h>", vim.lsp.buf.hover, "[H]over", "i")
+					map("gs", vim.lsp.buf.signature_help, "[S]ignature Help", "n")
+					map("<C-g>", vim.lsp.buf.signature_help, "Signature Help", "i")
+					map("gd", function()
+						require("telescope.builtin").lsp_definitions({ reuse_win = true })
+					end, "Goto Definition")
 
 					map("gr", function()
 						require("telescope.builtin").lsp_references({

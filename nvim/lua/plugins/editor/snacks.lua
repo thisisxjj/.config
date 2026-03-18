@@ -18,7 +18,7 @@ return {
 	keys = {
 		-- 专门为通知系统分配独立快捷键，避开你的 <leader>s (Search/Telescope) 命名空间
 		{
-			"<leader>n",
+			"<leader>nn",
 			function()
 				require("snacks").notifier.show_history()
 			end,

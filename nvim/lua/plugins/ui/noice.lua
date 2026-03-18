@@ -43,6 +43,12 @@ return {
 			long_message_to_split = false,
 		},
 		views = {
+			popup = {
+				size = {
+					width = "70%", -- 限制宽度：可以是具体的字符列数（比如 80 或 100），也可以是屏幕百分比（比如 "60%"）
+					height = "auto",
+				},
+			},
 			cmdline_popup = {
 				position = {
 					row = "40%",
@@ -60,10 +66,10 @@ return {
 	keys = {
 		-- 1. 最核心的：一键呼出历史消息搜索 (原先的 <leader>snt)
 		-- 改成 <leader>m (代表 Messages)，只有两个键，极其顺手
-		{ "<leader>m", "<cmd>Noice telescope<cr>", desc = "Messages History (Noice)" },
+		{ "<leader>mm", "<cmd>Noice telescope<cr>", desc = "Messages History (Noice)" },
 		-- 2. 清除屏幕上的所有残留通知和消息 (原先的 <leader>snd)
 		{
-			"<leader>dm",
+			"<leader>md",
 			function()
 				require("noice").cmd("dismiss")
 			end,
@@ -72,7 +78,7 @@ return {
 
 		-- 3. 查看上一条一闪而过的消息
 		{
-			"<leader>lm",
+			"<leader>ml",
 			function()
 				require("noice").cmd("last")
 			end,
