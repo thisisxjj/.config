@@ -167,4 +167,129 @@ return {
 			})
 		end,
 	},
+	{
+		"mfussenegger/nvim-dap",
+		optional = true,
+		opts = function()
+			local dap = require("dap")
+
+			-- A: 安全注册 Adapter
+			for _, adapterType in ipairs({ "node", "chrome", "msedge" }) do
+				local pwaType = "pwa-" .. adapterType
+
+				if not dap.adapters[pwaType] then
+					local mason_registry = vim.env.MASON or (vim.fn.stdpath("data") .. "/mason")
+					dap.adapters[pwaType] = {
+						type = "server",
+						host = "localhost",
+						port = "${port}",
+						executable = {
+							command = "node",
+							args = {
+								mason_registry .. "/packages/js-debug-adapter/js-debug/src/dapDebugServer.js",
+								"${port}",
+							},
+						},
+					}
+				end
+
+				if not dap.adapters[adapterType] then
+					dap.adapters[adapterType] = function(cb, config)
+						config.type = pwaType
+						local nativeAdapter = dap.adapters[pwaType]
+						if type(nativeAdapter) == "function" then
+							nativeAdapter(cb, config)
+						else
+							cb(nativeAdapter)
+						end
+					end
+				end
+			end
+
+			-- B: 安全追加 Filetypes
+			local js_filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" }
+			local vscode = require("dap.ext.vscode")
+
+			vscode.type_to_filetypes["node"] = vscode.type_to_filetypes["node"] or {}
+			vscode.type_to_filetypes["pwa-node"] = vscode.type_to_filetypes["pwa-node"] or {}
+
+			for _, ft in ipairs(js_filetypes) do
+				if not vim.tbl_contains(vscode.type_to_filetypes["node"], ft) then
+					table.insert(vscode.type_to_filetypes["node"], ft)
+					table.insert(vscode.type_to_filetypes["pwa-node"], ft)
+				end
+			end
+
+			-- C: 独立注入 Configuration
+			for _, language in ipairs(js_filetypes) do
+				if not dap.configurations[language] then
+					local runtimeExecutable = nil
+					if language:find("typescript") then
+						runtimeExecutable = vim.fn.executable("tsx") == 1 and "tsx" or "ts-node"
+					end
+
+					dap.configurations[language] = {
+						{
+							type = "pwa-node",
+							request = "launch",
+							name = "Launch file",
+							program = "${file}",
+							cwd = "${workspaceFolder}",
+							sourceMaps = true,
+							runtimeExecutable = runtimeExecutable,
+							skipFiles = { "<node_internals>/**", "node_modules/**" },
+							resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+						},
+						{
+							type = "pwa-node",
+							request = "attach",
+							name = "Attach",
+							processId = require("dap.utils").pick_process,
+							cwd = "${workspaceFolder}",
+							sourceMaps = true,
+							runtimeExecutable = runtimeExecutable,
+							skipFiles = { "<node_internals>/**", "node_modules/**" },
+							resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+						},
+					}
+				end
+			end
+		end,
+	},
+	-- 3. 防护与美化组件 (防御性追加配置)
+	{
+		"jay-babu/mason-nvim-dap.nvim",
+		optional = true,
+		opts = function(_, opts)
+			opts.automatic_installation = opts.automatic_installation or {}
+			if type(opts.automatic_installation) == "boolean" then
+				opts.automatic_installation = {}
+			end
+			opts.automatic_installation.exclude = opts.automatic_installation.exclude or {}
+
+			if not vim.tbl_contains(opts.automatic_installation.exclude, "chrome") then
+				table.insert(opts.automatic_installation.exclude, "chrome")
+			end
+		end,
+	},
+
+	{
+		"echasnovski/mini.icons",
+		optional = true,
+		opts = function(_, opts)
+			opts.file = opts.file or {}
+			local frontend_icons = {
+				[".eslintrc.js"] = { glyph = "󰱺", hl = "MiniIconsYellow" },
+				[".node-version"] = { glyph = "", hl = "MiniIconsGreen" },
+				[".prettierrc"] = { glyph = "", hl = "MiniIconsPurple" },
+				[".yarnrc.yml"] = { glyph = "", hl = "MiniIconsBlue" },
+				["eslint.config.js"] = { glyph = "󰱺", hl = "MiniIconsYellow" },
+				["package.json"] = { glyph = "", hl = "MiniIconsGreen" },
+				["tsconfig.json"] = { glyph = "", hl = "MiniIconsAzure" },
+				["tsconfig.build.json"] = { glyph = "", hl = "MiniIconsAzure" },
+				["yarn.lock"] = { glyph = "", hl = "MiniIconsBlue" },
+			}
+			opts.file = vim.tbl_deep_extend("force", opts.file, frontend_icons)
+		end,
+	},
 }

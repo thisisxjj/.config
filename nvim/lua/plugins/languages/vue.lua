@@ -88,4 +88,99 @@ return {
 			opts.formatters_by_ft.vue = { "prettierd", "prettier", stop_after_first = true }
 		end,
 	},
+	{
+		"mfussenegger/nvim-dap",
+		optional = true,
+		opts = function()
+			local dap = require("dap")
+			local vscode = require("dap.ext.vscode")
+
+			-- A: 独立挂载调试适配器（打破与 typescript.lua 的隐式依赖）
+			for _, adapterType in ipairs({ "node", "chrome", "msedge" }) do
+				local pwaType = "pwa-" .. adapterType
+
+				if not dap.adapters[pwaType] then
+					dap.adapters[pwaType] = {
+						type = "server",
+						host = "localhost",
+						port = "${port}",
+						executable = {
+							command = "js-debug-adapter",
+							args = { "${port}" },
+						},
+					}
+				end
+
+				if not dap.adapters[adapterType] then
+					dap.adapters[adapterType] = function(cb, config)
+						config.type = pwaType
+						local nativeAdapter = dap.adapters[pwaType]
+						if type(nativeAdapter) == "function" then
+							nativeAdapter(cb, config)
+						else
+							cb(nativeAdapter)
+						end
+					end
+				end
+			end
+
+			-- B: 将 Vue 映射给 VSCode 的 package.json 调试读取器
+			vscode.type_to_filetypes["node"] = vscode.type_to_filetypes["node"] or {}
+			vscode.type_to_filetypes["pwa-node"] = vscode.type_to_filetypes["pwa-node"] or {}
+			vscode.type_to_filetypes["pwa-chrome"] = vscode.type_to_filetypes["pwa-chrome"] or {}
+
+			if not vim.tbl_contains(vscode.type_to_filetypes["node"], "vue") then
+				table.insert(vscode.type_to_filetypes["node"], "vue")
+			end
+			if not vim.tbl_contains(vscode.type_to_filetypes["pwa-node"], "vue") then
+				table.insert(vscode.type_to_filetypes["pwa-node"], "vue")
+			end
+			if not vim.tbl_contains(vscode.type_to_filetypes["pwa-chrome"], "vue") then
+				table.insert(vscode.type_to_filetypes["pwa-chrome"], "vue")
+			end
+
+			-- C: 专属 Vue 的满血调试配置
+			if not dap.configurations.vue then
+				local runtimeExecutable = vim.fn.executable("tsx") == 1 and "tsx" or "ts-node"
+
+				dap.configurations.vue = {
+					-- 选项 1：连接前端浏览器调试 (Vite 环境最常用)
+					{
+						type = "pwa-chrome",
+						request = "launch",
+						name = "Launch Chrome (Vite 5173)",
+						url = "http://localhost:5173",
+						webRoot = "${workspaceFolder}",
+						sourceMaps = true,
+						userDataDir = false,
+						resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+					},
+					-- 选项 2：运行 Vue SSR 或普通 Node 脚本
+					{
+						type = "pwa-node",
+						request = "launch",
+						name = "Launch file (Node)",
+						program = "${file}",
+						cwd = "${workspaceFolder}",
+						sourceMaps = true,
+						runtimeExecutable = runtimeExecutable,
+						skipFiles = { "<node_internals>/**", "node_modules/**" },
+						resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+					},
+					-- 选项 3：附加到已运行的 Node SSR 进程
+					{
+						type = "pwa-node",
+						request = "attach",
+						name = "Attach (Node)",
+						processId = require("dap.utils").pick_process,
+						cwd = "${workspaceFolder}",
+						sourceMaps = true,
+						runtimeExecutable = runtimeExecutable,
+						skipFiles = { "<node_internals>/**", "node_modules/**" },
+						resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+					},
+				}
+			end
+		end,
+	},
 }
