@@ -125,11 +125,10 @@ end
 -- ==========================================================================
 
 -- --- 视觉行移动 (Visual/Display Line) ---
--- 逻辑：k 是下，所以 gk 应该是视觉下移 (原 gj)
-keymap({ "n", "v" }, "gk", "gj", opts)
 -- 逻辑：i 是上，所以 gi 应该是视觉上移 (原 gk)
-keymap({ "n", "v" }, "gi", "gk", opts)
-
+keymap({ "n", "v" }, "gj", "<Nop>", opts)
+keymap({ "n", "v" }, "gn", "gi", opts)
+keymap("v", "gk", "<Nop>", opts)
 -- --- 折叠跳转 (Folds) ---
 -- 逻辑：k 是下，zk 应该是下个折叠 (原 zj)
 keymap("n", "zk", "zj", opts)

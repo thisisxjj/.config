@@ -135,7 +135,7 @@ return {
 					map("<leader>ca", vim.lsp.buf.code_action, "Code Action", { "n", "x" })
 					map("gh", vim.lsp.buf.hover, "Goto [H]over")
 					map("<C-h>", vim.lsp.buf.hover, "[H]over", "i")
-					map("gs", vim.lsp.buf.signature_help, "[S]ignature Help", "n")
+					map("gk", vim.lsp.buf.signature_help, "[S]ignature Help", "n")
 					map("<C-g>", vim.lsp.buf.signature_help, "Signature Help", "i")
 					map("gd", function()
 						require("telescope.builtin").lsp_definitions({ reuse_win = true })
