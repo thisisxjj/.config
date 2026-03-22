@@ -107,7 +107,7 @@ return {
 					map("<leader>cu", "<cmd>VtsExec remove_unused_imports<cr>", "Remove unused imports")
 					map("<leader>cD", "<cmd>VtsExec fix_all<cr>", "Fix all diagnostics")
 					map("<leader>cV", "<cmd>VtsExec select_ts_version<cr>", "Select TS workspace version")
-					map("<leader>cT", function()
+					map("<leader>cR", function()
 						vim.cmd("LspRestart vtsls")
 					end, "Restart TS Server")
 
