@@ -23,6 +23,7 @@ require("lazy").setup({
 		{ import = "plugins.coding.cmp" },
 		{ import = "plugins.coding.trouble" },
 		{ import = "plugins.coding.dap" },
+		{ import = "plugins.coding.todo-comments" },
 		{ import = "plugins.editor.gitsigns" },
 		{ import = "plugins.editor.lazygit" },
 		{ import = "plugins.editor.tmux" },
