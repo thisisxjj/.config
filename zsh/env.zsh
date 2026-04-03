@@ -43,6 +43,7 @@ export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"
 export HOMEBREW_DOWNLOAD_CONCURRENCY=auto
 export https_proxy=http://127.0.0.1:7890
+export XDG_CONFIG_HOME="$HOME/.config"
 if [ -d "$HOME/Github/mac-ctrl/bin" ] && ! echo ":$PATH:" | grep -q ":$HOME/Github/mac-ctrl/bin:" ; then
   export PATH="$HOME/Github/mac-ctrl/bin:$PATH"
 fi

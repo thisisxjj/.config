@@ -1,0 +1,31 @@
+keybinding:
+  universal:
+    return: "<esc>"
+    prevItem-alt: "i"
+    nextItem-alt: "k"
+    prevBlock-alt: "j"
+    nextBlock-alt: "l"
+    nextMatch: "="
+    prevMatch: "-"
+    new: "n"
+    edit: "e"
+    openFile: "o"
+    scrollUpMain-alt1: "I"
+    scrollDownMain-alt1: "K"
+    redo: "<c-r>"
+    filteringMenu: "<c-f>"
+    toggleRangeSelect: v
+  files:
+    ignoreFile: "g"
+    IgnoreOrExcludeFile: "G"
+  commits:
+    moveDownCommit: "K"
+    moveUpCommit: "I"
+    openInBrowser: o
+    viewBisectOptions: b
+    startInteractiveRebase: "R"
+    cherryPickCopy: "C"
+    pasteCommits: "V"
+  branches:
+    viewGitFlowOptions: "f"
+    setUpstream: "u"
