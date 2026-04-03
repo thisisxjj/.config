@@ -3,6 +3,20 @@
   "plugin": ["opencode-gemini-auth@latest"],
   "model": "anthropic/claude-opus-4-5",
   "autoupdate": true,
+  "provider": {
+    "minimax": {
+      "npm": "@ai-sdk/anthropic",
+      "options": {
+        "baseURL": "https://api.minimax.io/anthropic/v1",
+        "apiKey": "{env:MINIMAX_API_KEY}"
+      },
+      "models": {
+        "MiniMax-M2.7": {
+          "name": "MiniMax-M2.7"
+        }
+      }
+    }
+  },
   "mcp": {
     "shadcn": {
       "enabled": true,
