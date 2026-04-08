@@ -137,8 +137,8 @@ keymap("n", "zi", "zk", opts)
 
 -- --- 搜索选中 (Visual Selection) ---
 -- 逻辑：h 是搜下一个，所以 gh 选中下一个匹配 (原 gn)
-keymap({ "n", "o", "x" }, "gh", "gn", opts)
-keymap({ "n", "o", "x" }, "gH", "gN", opts)
+keymap({ "n", "o", "x" }, "gm", "gn", opts)
+keymap({ "n", "o", "x" }, "gM", "gN", opts)
 
 -- ==========================================================================
 --  第六部分：窗口管理 (Window Management)

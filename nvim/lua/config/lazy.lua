@@ -43,6 +43,7 @@ require("lazy").setup({
 		{ import = "plugins.ui.colorscheme" },
 		{ import = "plugins.ui.dressing" },
 		{ import = "plugins.ui.noice" },
+		{ import = "plugins.ui.which-key" },
 		{ import = "plugins.ui.dashboard" },
 	},
 	checker = { enabled = false },
