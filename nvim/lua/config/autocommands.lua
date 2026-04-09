@@ -63,3 +63,21 @@ vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
 		vim.opt_local.cursorline = true
 	end,
 })
+
+-- refresh nvim-tree git state after lazygit actions
+vim.api.nvim_create_autocmd({ "TermClose", "FocusGained" }, {
+	group = vim.api.nvim_create_augroup("nvimtree_git_refresh", { clear = true }),
+	pattern = { "term://*lazygit*", "*" },
+	callback = function(args)
+		if args.event == "TermClose" and not tostring(args.file):find("lazygit") then
+			return
+		end
+
+		vim.cmd("checktime")
+
+		local ok, api = pcall(require, "nvim-tree.api")
+		if ok then
+			api.tree.reload()
+		end
+	end,
+})
