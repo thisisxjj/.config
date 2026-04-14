@@ -29,7 +29,7 @@ return {
 
 			-- 🌟 修复 2：使用 vim.tbl_deep_extend 安全合并 settings，绝不能用 "=" 直接覆盖！
 			local vtsls_settings = {
-				complete_function_calls = true,
+				complete_function_calls = false,
 				vtsls = {
 					enableMoveToFileCodeAction = true,
 					autoUseWorkspaceTsdk = true,
@@ -40,7 +40,7 @@ return {
 				},
 				typescript = {
 					updateImportsOnFileMove = { enabled = "always" },
-					suggest = { completeFunctionCalls = true },
+					suggest = { completeFunctionCalls = false },
 					inlayHints = {
 						enumMemberValues = { enabled = true },
 						functionLikeReturnTypes = { enabled = true },
